@@ -1,0 +1,142 @@
+/* XODE pink, sampled from the logo (#ed1f7a). Links and button colours are
+   shaded so text keeps at least 4.5:1 contrast in both themes. */
+:root {
+  --vp-c-brand-1: #be1962;
+  --vp-c-brand-2: #c71a66;
+  --vp-c-brand-3: #d11b6b;
+  --vp-c-brand-soft: rgba(237, 31, 122, 0.14);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #be1962 20%, #ed1f7a);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #ed1f7a 50%, #f479af 50%);
+  --vp-home-hero-image-filter: blur(44px);
+}
+
+.dark {
+  --vp-c-brand-1: #f36da9;
+  --vp-c-brand-2: #da1d70;
+  --vp-c-brand-3: #c71a66;
+  --vp-c-brand-soft: rgba(237, 31, 122, 0.16);
+
+  --vp-home-hero-name-background: linear-gradient(120deg, #ed1f7a 20%, #f479af);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --vp-home-hero-image-filter: blur(56px);
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --vp-home-hero-image-filter: blur(68px);
+  }
+}
+
+/* Image zoom (medium-zoom): show images are clickable, and keep the enlarged
+   image above the nav bar. App icons are small logos, so they don't zoom. */
+.vp-doc img:not(.app-icon) {
+  cursor: zoom-in;
+}
+
+.vp-doc img.app-icon {
+  display: inline-block;
+  border-radius: 14px;
+}
+
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+  z-index: 100;
+}
+
+/* Engineering articles: pages with `pageClass: article-page` in their frontmatter get
+   an eyebrow above the title, a standfirst and byline under it, and pull quotes. */
+.article-page .article-eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vp-c-brand-1);
+}
+
+.article-page .vp-doc h1 + p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+}
+
+.article-page .article-byline {
+  margin: 24px 0 40px;
+  padding-top: 12px;
+  border-top: 1px solid var(--vp-c-divider);
+  font-family: var(--vp-font-family-mono);
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+
+.article-page .vp-doc blockquote {
+  margin: 28px 0;
+  padding-left: 20px;
+  border-left-color: var(--vp-c-brand-1);
+}
+
+.article-page .vp-doc blockquote > p {
+  font-size: 19px;
+  line-height: 1.55;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.article-page .article-next {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-text-2);
+}
+
+/* Two custom blocks side by side, e.g. a weak claim next to a strong one:
+   <div class="claim-compare"> around a `::: warning` and a `::: tip`. */
+.vp-doc .claim-compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.vp-doc .claim-compare .custom-block {
+  margin: 0;
+}
+
+@media (max-width: 639px) {
+  .vp-doc .claim-compare {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* A list of layers, each a bold heading line and a description, separated by rules:
+   <div class="defense-layers"> around a loose bullet list. */
+.vp-doc .defense-layers ul {
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vp-doc .defense-layers li {
+  margin: 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc .defense-layers li:last-child {
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc .defense-layers li p {
+  margin: 0;
+}
+
+.vp-doc .defense-layers li p + p {
+  margin-top: 4px;
+  color: var(--vp-c-text-2);
+}
