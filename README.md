@@ -40,16 +40,10 @@ npm run build     # outputs static files to docs/.vitepress/dist
 npm run preview   # serves that build at http://localhost:4173
 ```
 
-To deploy, connect the repository to a static host such as Vercel, Netlify or
-Cloudflare Pages with:
-
-| Setting          | Value                  |
-| ---------------- | ---------------------- |
-| Build command    | `npm run build`        |
-| Output directory | `docs/.vitepress/dist` |
-
-Then point your domain (for example `wiki.xode.net`) at the host. Pages use URLs
-without `.html`, which these hosts and GitHub Pages all support.
+The site is deployed to GitHub Pages at https://wiki.xode.net.
+`.github/workflows/deploy.yml` builds and publishes it on every push to `main`, and
+`docs/public/CNAME` sets the custom domain. In the repository's Settings → Pages, the
+source must be set to **GitHub Actions**.
 
 ## Where the content came from
 
