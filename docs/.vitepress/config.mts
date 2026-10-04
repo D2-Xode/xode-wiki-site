@@ -1,4 +1,8 @@
-import { defineConfig, type DefaultTheme } from 'vitepress'
+import fs from 'node:fs'
+import path from 'node:path'
+import { defineConfig, type DefaultTheme, type HeadConfig } from 'vitepress'
+
+const SITE_URL = 'https://wiki.xode.net'
 
 // English lives at the root; each translation mirrors it under docs/<lang>/ with the
 // same file names. Translated pages reuse the English images (../../<section>/images/).
@@ -177,13 +181,142 @@ const zh: Labels = {
   },
 }
 
+// The old wiki served each page at /app/page/<Google Doc ID>. Each of those URLs gets a
+// redirect to the new page, so old links and search results still land somewhere.
+const OLD_WIKI_PAGES: Record<string, string> = {
+  '1-t_tn665WK341JCEhImWkpzXnhbq1Hed8MSCksEibyM': '/introduction/lets-get-started',
+  '1GRKFVoxUxGWHi8k2IEab72UKAM6USNJh-sqINPDGxkI': '/introduction/polkadot-ecosystem',
+  '1szCtaZbFAyJwhc8IGLrZhfRnADXZmK8aMxlsW41DZjA': '/introduction/web3',
+  '1sNm5lmOVbj6I6BtJDF0sxo6Ko2V46E2SVRoX9qR4zYQ': '/introduction/xode-blockchain',
+  '1w1op4Mczwu6yDwOhJLcZ0-OaU698AyNl1oN_HZloEPs': '/introduction/xode-governance',
+  '11d4zRkfttxAYslhtw_KYuMqC7MPb6Jfmf6AebnUs3wI': '/network/compiling-xode',
+  '1Cw6d0gBFsnlfHabmMQCMfOydrYivfNlQYjoU1Esnk1g': '/network/runtime-upgrade',
+  '1mcT3wXrFokrJ3XGerm8zkHq9KpO_YW6xNf9ueJNNvRg': '/network/xode-network',
+  '1it-qnmkhAO-aDiNsh3f8jZRCHWEv8zKPwe-DeyfnMQg': '/network/xode-node',
+  '1kWGdbgYQOk0LLZnEuDHZ6BQvMm73n6vqpXejLEZkkeQ': '/network/xode-node-kusama-3344',
+  '1WwBLI00nnQu8IDGQ8EiPRcVJ0PfXElBzTpyazBc4RtA': '/network/xode-staking',
+  '18pdu5dzeRZnbqX-qTInwKK-Yj6PqrqlQvyjZOKbmH94': '/network/xode-transaction-fees',
+  '1bvAoWjHjLd9QgtmnBiY7jj1fA2Hw-upPOGgbXlV-tX0': '/security/block-verification',
+  '1SnXpvUkZx4Y6OvW47KD8qjiW_5X5XnvixRKHIJnix6Y': '/security/security-mechanism',
+  '1mth3xJhr6iqEBtmHWWnG8hdzj7VD9wc83s2pwnPWnJA': '/smart-contract/evm-smart-contract',
+  '1G-ekjk-oE3iyjuDXFTMlp4PFe2ROsKhi8BFPz713Vd0': '/smart-contract/wasm-smart-contract',
+  '1A-lmbc6PY3eV302sd7wHPlxDjOo-7XoyKklq8Fcnymo': '/wallets/xterium-wallet-beta',
+  '18Du-oKCHzxTQZnAeKEq02RXWy2dE6qpAhgeDBFE1jQw': '/xon/other-assets',
+  '1YOGj63VMjNRUtZ6tLeBNSPpnam36yJG1FXkzrS5fRpE': '/xon/tokenomics',
+  '1gcFIvd2zd_UPczJk2FrtLiAr8pV1OC7PnXmTQm3KmDE': '/xon/xon-utility-token',
+}
+
+const redirectPage = (to: string) => `<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>XODE Wiki</title>
+<link rel="canonical" href="${SITE_URL}${to}">
+<meta http-equiv="refresh" content="0; url=${to}">
+<p>This page has moved to <a href="${to}">${SITE_URL}${to}</a>.</p>
+`
+
+// The address search engines should index: the clean URL, with home pages ending in "/".
+const pageUrl = (relativePath: string) =>
+  `${SITE_URL}/${relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')}`
+
+// A page without a `description` in its frontmatter is described, in search results and
+// link previews, by its first paragraph of prose.
+function leadParagraph(markdown: string): string | undefined {
+  const lines = markdown.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '').split(/\r?\n/)
+  const para: string[] = []
+  let inFence = false
+  for (const line of lines) {
+    const fence = /^\s*(```|~~~)/.test(line)
+    if (fence) inFence = !inFence
+    // Headings, HTML, tables, quotes, images, containers and lists aren't prose.
+    const prose =
+      !fence && !inFence && line.trim() !== '' && !/^\s*([#<|>]|!\[|:::|[*+-]\s|\d+\.\s)/.test(line)
+    if (prose) para.push(line.trim())
+    else if (para.length) break
+  }
+  const text = para
+    .join(' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]+>/g, '')
+    .replace(/[*`]/g, '')
+    .replace(/\\(.)/g, '$1')
+    // VitePress writes the description into a double-quoted attribute without escaping it.
+    .replace(/"([^"]*)"/g, '“$1”')
+    .replace(/"/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return text ? clip(text) : undefined
+}
+
+// Search results show about 155 characters of a description, and about half as many
+// CJK or Hangul characters, which are twice as wide. Longer text is cut at a sentence
+// end, or failing that at a word.
+function clip(text: string): string {
+  const max = /[぀-ヿ㐀-鿿가-힯]/.test(text) ? 90 : 160
+  if (text.length <= max) return text
+  const head = text.slice(0, max)
+  // A full stop followed by a lowercase word is an abbreviation ("vs. when"), not an end.
+  const sentence = [...head.matchAll(/[.!?](?= [^a-z])|[。！？]/g)].at(-1)?.index ?? -1
+  if (sentence > max / 2) return head.slice(0, sentence + 1)
+  const space = head.lastIndexOf(' ')
+  return (space > max / 2 ? head.slice(0, space) : head.slice(0, max - 1)).replace(/[\s,.;:、，]+$/, '') + '…'
+}
+
 export default defineConfig({
   title: 'XODE Wiki',
   cleanUrls: true,
+  lastUpdated: true,
+  sitemap: { hostname: SITE_URL },
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
     ['meta', { name: 'theme-color', content: '#ed1f7a' }],
+    ['meta', { property: 'og:site_name', content: 'XODE Wiki' }],
+    ['meta', { property: 'og:image', content: `${SITE_URL}/logo.png` }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
   ],
+
+  transformPageData(pageData, { siteConfig }) {
+    if (pageData.description) return
+    const lead = leadParagraph(fs.readFileSync(path.join(siteConfig.srcDir, pageData.filePath), 'utf8'))
+    if (lead) pageData.description = lead
+  },
+
+  transformHead({ pageData, siteData, title, description }) {
+    if (pageData.isNotFound) return
+    const url = pageUrl(pageData.relativePath)
+    const head: HeadConfig[] = [
+      ['link', { rel: 'canonical', href: url }],
+      ['meta', { property: 'og:type', content: pageData.frontmatter.layout === 'home' ? 'website' : 'article' }],
+      ['meta', { property: 'og:url', content: url }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { property: 'og:locale', content: siteData.lang.replace('-', '_') }],
+    ]
+    // Tells Google the site's name, which it shows above the result in place of the URL.
+    if (pageData.relativePath === 'index.md') {
+      const website = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'XODE Wiki',
+        alternateName: ['XODE Blockchain Wiki', 'XODE Docs'],
+        url: `${SITE_URL}/`,
+        description,
+        inLanguage: ['en-US', 'ko-KR', 'ja-JP', 'zh-CN'],
+        publisher: { '@type': 'Organization', name: 'XODE', url: 'https://www.xode.net', logo: `${SITE_URL}/logo.png` },
+      }
+      head.push(['script', { type: 'application/ld+json' }, JSON.stringify(website)])
+    }
+    return head
+  },
+
+  buildEnd({ outDir }) {
+    for (const [id, page] of Object.entries(OLD_WIKI_PAGES)) {
+      const file = path.join(outDir, 'app', 'page', `${id}.html`)
+      fs.mkdirSync(path.dirname(file), { recursive: true })
+      fs.writeFileSync(file, redirectPage(page))
+    }
+  },
 
   locales: {
     root: {
@@ -201,6 +334,7 @@ export default defineConfig({
         sidebar: sidebar('/ko', ko),
         outline: { level: [2, 3], label: '이 페이지의 내용' },
         docFooter: { prev: '이전 페이지', next: '다음 페이지' },
+        lastUpdated: { text: '마지막 업데이트' },
         langMenuLabel: '언어 변경',
         returnToTopLabel: '맨 위로',
         sidebarMenuLabel: '메뉴',
@@ -219,6 +353,7 @@ export default defineConfig({
         sidebar: sidebar('/ja', ja),
         outline: { level: [2, 3], label: 'このページの内容' },
         docFooter: { prev: '前のページ', next: '次のページ' },
+        lastUpdated: { text: '最終更新日' },
         langMenuLabel: '言語を変更',
         returnToTopLabel: 'トップへ戻る',
         sidebarMenuLabel: 'メニュー',
@@ -237,6 +372,7 @@ export default defineConfig({
         sidebar: sidebar('/zh', zh),
         outline: { level: [2, 3], label: '本页内容' },
         docFooter: { prev: '上一页', next: '下一页' },
+        lastUpdated: { text: '最后更新于' },
         langMenuLabel: '切换语言',
         returnToTopLabel: '返回顶部',
         sidebarMenuLabel: '菜单',

@@ -1,3 +1,7 @@
+---
+description: "How staking works on XODE: collators bond XON and holders delegate to them, Nimbus selects the top 36 candidates, and Aura assigns block authoring."
+---
+
 # XODE Staking
 
 ## Xode Consensus

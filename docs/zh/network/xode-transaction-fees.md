@@ -1,3 +1,7 @@
+---
+description: "XODE 的费用机制：交易权重（refTime 与 proofSize）、存储租金和 StorageDepositLimit，分别面向用户和智能合约开发者说明。"
+---
+
 # XODE 交易费用
 
 ## 权重

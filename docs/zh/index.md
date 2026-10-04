@@ -1,5 +1,7 @@
 ---
 layout: home
+titleTemplate: "XODE 区块链指南与文档"
+description: "XODE 区块链（Polkadot 平行链）官方 Wiki：运行 XODE 节点、质押、开发 EVM 与 WASM 智能合约、使用 Xterium 钱包，以及了解 XON 代币。"
 
 hero:
   name: XODE Wiki

@@ -1,5 +1,7 @@
 ---
 layout: home
+titleTemplate: "XODE 블록체인 가이드 및 문서"
+description: "Polkadot 파라체인인 XODE 블록체인의 공식 위키. XODE 노드 실행, 스테이킹, EVM·WASM 스마트 컨트랙트 개발, Xterium 지갑과 XON 토큰을 안내합니다."
 
 hero:
   name: XODE Wiki

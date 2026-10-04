@@ -1,3 +1,7 @@
+---
+description: "XODE 的质押机制：收集人绑定 XON、持有者向其委托，Nimbus 选出前 36 名候选者，再由 Aura 分配出块。"
+---
+
 # XODE 质押
 
 ## Xode 共识

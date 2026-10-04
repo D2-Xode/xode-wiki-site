@@ -1,3 +1,7 @@
+---
+description: "How fees work on XODE: transaction weight (refTime and proofSize), storage rent and the StorageDepositLimit, for both users and smart contract developers."
+---
+
 # XODE Transaction Fees
 
 ## Weight

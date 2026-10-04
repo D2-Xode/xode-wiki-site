@@ -1,3 +1,7 @@
+---
+description: "How to build XODE from source: set up GitHub SSH access and a Rust toolchain, compile the node for Raspberry Pi (aarch64), and test it with Zombienet."
+---
+
 # Compiling XODE
 
 ## Setting up your Github environment

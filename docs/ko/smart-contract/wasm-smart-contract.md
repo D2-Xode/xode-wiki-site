@@ -1,3 +1,7 @@
+---
+description: "pallet-contracts 기반 XODE WASM 스마트 컨트랙트. 파라체인 대신 스마트 컨트랙트를 개발해야 할 때와, 지원이 중단된 난수 기능을 쓸 수 없는 이유를 설명합니다."
+---
+
 # WASM 스마트 컨트랙트
 
 ## Polkadot의 스마트 컨트랙트

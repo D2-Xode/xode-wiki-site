@@ -1,3 +1,7 @@
+---
+description: "XODE를 소스에서 빌드하는 방법. GitHub SSH와 Rust 환경을 설정하고, Raspberry Pi(aarch64)용으로 노드를 컴파일한 뒤 Zombienet으로 테스트합니다."
+---
+
 # XODE 컴파일하기
 
 ## Github 환경 설정

@@ -1,3 +1,7 @@
+---
+description: "XODE의 수수료 구조. 트랜잭션 가중치(refTime, proofSize), 스토리지 임대료, StorageDepositLimit을 사용자와 스마트 컨트랙트 개발자 관점에서 설명합니다."
+---
+
 # XODE 트랜잭션 수수료
 
 ## 가중치

@@ -1,3 +1,7 @@
+---
+description: "从源码构建 XODE：配置 GitHub SSH 与 Rust 环境，为 Raspberry Pi（aarch64）编译节点，并用 Zombienet 进行测试。"
+---
+
 # 编译 XODE
 
 ## 配置 Github 环境

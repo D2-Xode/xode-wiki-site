@@ -1,3 +1,7 @@
+---
+description: "XON is the native utility token of the XODE Blockchain, used for governance votes, staking with collators, bonding liquidity and paying transaction fees."
+---
+
 # XON Utility Token
 
 In the XODE Blockchain, the native utility token is called XON. The XON token serves several critical functions within the blockchain, including:

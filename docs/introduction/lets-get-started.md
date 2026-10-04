@@ -1,3 +1,7 @@
+---
+description: "Start here to learn XODE: Web3, Polkadot and the XODE Blockchain, then scanning blocks, the Xterium wallet, your first smart contract and a XON20 token."
+---
+
 # Let's get started
 
 Embarking on a journey into the world of blockchain technology entails a multifaceted approach, beginning with an exploration of fundamental concepts like Web3, the Polkadot Ecosystem, and the XODE Blockchain. Through this foundational understanding, one can delve into practical exercises, from scanning blocks to grasping the intricacies of decentralized networks. The journey progresses with hands-on experiences, such as downloading and utilizing the XODE Mobile Wallet and experimenting with smart contracts, culminating in the creation of a XON20 smart contract, a significant milestone in developing an understanding of blockchain development and its potential for innovation and decentralized applications.

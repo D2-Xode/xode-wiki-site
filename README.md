@@ -32,6 +32,11 @@ Open http://localhost:5173. Pages reload as you edit them.
   `phones-as-nodes.md` as a template. Its Korean version is the original.
 - The home page is `docs/index.md`. Site title, nav links and search settings are in
   `docs/.vitepress/config.mts`. Brand colours are in `docs/.vitepress/theme/custom.css`.
+- Search results and link previews describe a page by its first paragraph. If that
+  paragraph doesn't say what the page is about, add a `description:` to the page's
+  frontmatter (and to each translation), as `docs/network/xode-staking.md` does.
+- Give images alt text that says what they show, e.g. `![Staking screen](...)`, rather
+  than `![](...)`. Search engines read it, and so do screen readers.
 
 ## Build and deploy
 
@@ -44,6 +49,12 @@ The site is deployed to GitHub Pages at https://wiki.xode.net.
 `.github/workflows/deploy.yml` builds and publishes it on every push to `main`, and
 `docs/public/CNAME` sets the custom domain. In the repository's Settings → Pages, the
 source must be set to **GitHub Actions**.
+
+The build also writes `sitemap.xml` (every page, with links between its translations),
+and each page gets a canonical URL and Open Graph tags for link previews; see
+`transformHead` in `docs/.vitepress/config.mts`. `docs/public/robots.txt` points
+crawlers at the sitemap. The old wiki's page URLs (`/app/page/<Google Doc ID>`)
+redirect to the new pages; the mapping is `OLD_WIKI_PAGES` in the same file.
 
 ## Where the content came from
 

@@ -1,3 +1,7 @@
+---
+description: "XODE をソースからビルドする手順。GitHub の SSH と Rust 環境を整え、Raspberry Pi（aarch64）向けにノードをコンパイルし、Zombienet でテストします。"
+---
+
 # XODE のコンパイル
 
 ## GitHub 環境のセットアップ

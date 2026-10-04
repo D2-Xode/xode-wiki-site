@@ -1,3 +1,7 @@
+---
+description: "基于 pallet-contracts 的 XODE WASM 智能合约：何时应编写智能合约而非开发平行链，以及为何不能使用已弃用的随机数功能。"
+---
+
 # WASM 智能合约
 
 ## Polkadot 中的智能合约

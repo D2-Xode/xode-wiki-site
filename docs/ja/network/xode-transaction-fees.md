@@ -1,3 +1,7 @@
+---
+description: "XODE の手数料の仕組み。トランザクションのウェイト（refTime と proofSize）、ストレージレント、StorageDepositLimit をユーザーと開発者向けに説明します。"
+---
+
 # XODE のトランザクション手数料
 
 ## ウェイト

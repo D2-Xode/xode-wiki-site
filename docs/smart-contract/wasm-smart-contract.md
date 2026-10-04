@@ -1,3 +1,7 @@
+---
+description: "WASM smart contracts on XODE with pallet-contracts: when to write a contract rather than build a parachain, and why deprecated randomness can’t be used."
+---
+
 # WASM Smart Contract
 
 ## Smart Contracts in Polkadot

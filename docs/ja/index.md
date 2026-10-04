@@ -1,5 +1,7 @@
 ---
 layout: home
+titleTemplate: "XODE ブロックチェーンのガイドとドキュメント"
+description: "Polkadot パラチェーンである XODE ブロックチェーンの公式 Wiki。ノードの実行、ステーキング、EVM・WASM スマートコントラクト、Xterium ウォレット、XON トークンを解説します。"
 
 hero:
   name: XODE Wiki

@@ -1,5 +1,7 @@
 ---
 layout: home
+titleTemplate: "Guides and docs for the XODE Blockchain"
+description: "Official wiki for the XODE Blockchain, a Polkadot parachain: run a XODE node, stake, build EVM and WASM smart contracts, use the Xterium wallet and learn about XON."
 
 hero:
   name: XODE Wiki
