@@ -43,35 +43,39 @@ chmod +x xode-solochain-node
 STEP 4: 베이스 경로 디렉터리 만들기
 
 ```bash
-mkdir xode-solochain
+mkdir data
 ```
 
 STEP 5: 셸 스크립트 만들기:
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
---name "xode-solochain-node-name"
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
+--name "xode-x1-node-name"
 ```
 
-STEP 6: xode-solochain-node.sh를 실행 가능하게 만들기
+파일을 `/home/ubuntu`가 아닌 다른 곳에 다운로드했다면 `BASE_DIR`을 바꾸고, `--name`에는 텔레메트리에 표시될 노드 이름을 입력하세요.
+
+STEP 6: launch-node.sh를 실행 가능하게 만들기
 
 ```bash
-chmod +x xode-solochain-node.sh
+chmod +x launch-node.sh
 ```
 
 STEP 7: 실행되는지 테스트
 
 ```bash
-./xode-solochain-node.sh
+./launch-node.sh
 ```
 
 로그에 노드가 블록을 가져오는 모습이 보여야 합니다. 다음 단계로 넘어가기 전에 `Ctrl+C`로 중지하세요.
@@ -86,7 +90,7 @@ sudo nano /etc/systemd/system/xode-solochain.service
 [Unit]
 Description=Xode X1 Node
 [Service]
-ExecStart=/home/ubuntu/xode-solochain-node.sh
+ExecStart=/home/ubuntu/launch-node.sh
 Restart=always
 RestartSec=120
 [Install]
@@ -113,11 +117,29 @@ journalctl -f -u xode-solochain
 
 ## XODE X1 검증자 실행하기
 
-검증자는 블록을 생성하고 최종 확정합니다. 위의 노드와 같은 방식으로 설정하되, 고정된 노드 키, `--validator` 플래그, 그리고 온체인에 등록한 세션 키 세 가지가 추가됩니다. 매 세션(1시간)마다 본드와 위임된 스테이크의 합이 가장 높은 후보들이 검증자가 됩니다.
+검증자는 블록을 생성하고 최종 확정합니다. 위의 노드와 비교해 고정된 노드 키, `--validator` 플래그, 그리고 온체인에 등록한 세션 키 세 가지가 추가됩니다. 매 세션(1시간)마다 본드와 위임된 스테이크의 합이 가장 높은 후보들이 검증자가 됩니다.
 
-본드할 최소 100 XON과 수수료용 XON을 보유한 계정이 필요합니다.
+본드할 최소 100 XON과 수수료용 XON을 보유한 계정이 필요합니다. 아래 단계는 노드와 같은 최소 사양을 갖춘 머신에서 검증자를 처음부터 설정합니다.
 
-STEP 1: Polkadot 바이너리 다운로드
+STEP 1: xode-solochain-node 바이너리 다운로드
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+```
+
+STEP 2: 체인 스펙 다운로드
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+```
+
+STEP 3: 바이너리를 실행 가능하게 만들기
+
+```bash
+chmod +x xode-solochain-node
+```
+
+STEP 4: Polkadot 바이너리 다운로드
 
 `polkadot` 바이너리는 노드 키를 생성하는 데에만 사용합니다.
 
@@ -126,7 +148,7 @@ curl -L "https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-s
 chmod +x polkadot
 ```
 
-STEP 2: 노드 키 생성
+STEP 5: 노드 키 생성
 
 ```bash
 ./polkadot key generate-node-key --file /home/ubuntu/node-key
@@ -134,34 +156,72 @@ STEP 2: 노드 키 생성
 
 이 파일에는 노드의 네트워크 개인 키가 들어 있습니다. 명령은 다른 노드가 내 노드를 찾을 때 쓰는 피어 ID를 출력합니다. 피어 ID를 기록해 두고, 파일은 비공개로 보관하며 잃어버리지 마세요. 노드는 시작할 때마다 같은 키가 필요합니다.
 
-STEP 3: 셸 스크립트에 `--validator`와 `--node-key` 추가
+STEP 6: 실행 스크립트 만들기:
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
 --validator \
---node-key $(cat /home/ubuntu/node-key) \
+--node-key $(cat $BASE_DIR/node-key) \
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
 --name "xode-x1-validator-name"
 ```
 
-검증자에는 `--rpc-external`을 추가하지 마세요. RPC는 해당 머신에서만 접근할 수 있어야 합니다.
+파일을 `/home/ubuntu`가 아닌 다른 곳에 다운로드했다면 `BASE_DIR`을 바꾸고, `--name`에는 검증자 이름을 입력하세요. 검증자에는 `--rpc-external`을 추가하지 마세요. RPC는 해당 머신에서만 접근할 수 있어야 합니다.
 
-STEP 4: 서비스를 재시작하고 노드 동기화가 끝날 때까지 기다리기
+STEP 7: launch-node.sh를 실행 가능하게 만들기
 
 ```bash
-sudo systemctl restart xode-solochain.service
+chmod +x launch-node.sh
+```
+
+STEP 8: 서비스 만들기:
+
+```bash
+sudo nano /etc/systemd/system/xode-solochain.service
+```
+
+```ini
+[Unit]
+Description=Xode X1 Validator
+[Service]
+ExecStart=/home/ubuntu/launch-node.sh
+Restart=always
+RestartSec=120
+[Install]
+WantedBy=multi-user.target
+```
+
+STEP 9: 서비스 활성화
+
+```bash
+sudo systemctl enable xode-solochain.service
+```
+
+STEP 10: 서비스 시작
+
+```bash
+sudo systemctl start xode-solochain.service
+```
+
+STEP 11: 30초 기다린 후 서비스가 실행 중인지 확인
+
+```bash
 journalctl -f -u xode-solochain
 ```
 
-STEP 5: 세션 키 생성
+다음 단계로 넘어가기 전에 노드 동기화가 끝날 때까지 기다리세요.
+
+STEP 12: 세션 키 생성
 
 검증자 머신에서 실행하세요:
 
@@ -173,15 +233,15 @@ curl -H "Content-Type: application/json" \
 
 응답의 `result`가 세션 키이며, `0x`로 시작하는 긴 16진수 문자열입니다. 대응하는 개인 키는 노드의 베이스 경로에 저장됩니다.
 
-STEP 6: 세션 키를 온체인에 등록
+STEP 13: 세션 키를 온체인에 등록
 
 [XODE X1에 연결된 Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer)를 여세요(RPC 엔드포인트 `wss://solochain.xode.net`).
 
 **Developer → Extrinsics**로 이동해 검증자 계정으로 다음을 제출하세요:
 
-* `session.setKeys`: `keys`에는 STEP 5의 16진수 문자열을, `proof`에는 `0x`를 입력
+* `session.setKeys`: `keys`에는 STEP 12의 16진수 문자열을, `proof`에는 `0x`를 입력
 
-STEP 7: 후보 등록 및 본드
+STEP 14: 후보 등록 및 본드
 
 같은 계정으로 다음을 제출하세요:
 

@@ -43,35 +43,39 @@ chmod +x xode-solochain-node
 STEP 4：ベースパス用ディレクトリの作成
 
 ```bash
-mkdir xode-solochain
+mkdir data
 ```
 
 STEP 5：シェルスクリプトの作成：
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
---name "xode-solochain-node-name"
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
+--name "xode-x1-node-name"
 ```
 
-STEP 6：xode-solochain-node.sh を実行可能にする
+ファイルを `/home/ubuntu` 以外の場所にダウンロードした場合は `BASE_DIR` を変更し、`--name` にはテレメトリに表示するノード名を設定してください。
+
+STEP 6：launch-node.sh を実行可能にする
 
 ```bash
-chmod +x xode-solochain-node.sh
+chmod +x launch-node.sh
 ```
 
 STEP 7：実行できるかテストする
 
 ```bash
-./xode-solochain-node.sh
+./launch-node.sh
 ```
 
 ログにノードがブロックをインポートしている様子が表示されます。次の手順に進む前に `Ctrl+C` で停止してください。
@@ -86,7 +90,7 @@ sudo nano /etc/systemd/system/xode-solochain.service
 [Unit]
 Description=Xode X1 Node
 [Service]
-ExecStart=/home/ubuntu/xode-solochain-node.sh
+ExecStart=/home/ubuntu/launch-node.sh
 Restart=always
 RestartSec=120
 [Install]
@@ -113,11 +117,29 @@ journalctl -f -u xode-solochain
 
 ## XODE X1 バリデーターを実行する
 
-バリデーターはブロックを生成し、ファイナライズします。上記のノードと同じ手順で設定し、固定のノードキー、`--validator` フラグ、オンチェーンに登録するセッションキーの 3 つを追加します。各セッション（1 時間）ごとに、ボンドと委任ステークの合計が最も高い候補がバリデーターになります。
+バリデーターはブロックを生成し、ファイナライズします。上記のノードと比べて、固定のノードキー、`--validator` フラグ、オンチェーンに登録するセッションキーの 3 つが追加されます。各セッション（1 時間）ごとに、ボンドと委任ステークの合計が最も高い候補がバリデーターになります。
 
-ボンド用に最低 100 XON と、手数料用の XON を保有するアカウントが必要です。
+ボンド用に最低 100 XON と、手数料用の XON を保有するアカウントが必要です。以下の手順では、ノードと同じ最小要件を満たすマシンでバリデーターを一から設定します。
 
-STEP 1：Polkadot バイナリのダウンロード
+STEP 1：xode-solochain-node バイナリのダウンロード
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+```
+
+STEP 2：チェーンスペックのダウンロード
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+```
+
+STEP 3：バイナリを実行可能にする
+
+```bash
+chmod +x xode-solochain-node
+```
+
+STEP 4：Polkadot バイナリのダウンロード
 
 `polkadot` バイナリはノードキーの生成にのみ使用します。
 
@@ -126,7 +148,7 @@ curl -L "https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-s
 chmod +x polkadot
 ```
 
-STEP 2：ノードキーの生成
+STEP 5：ノードキーの生成
 
 ```bash
 ./polkadot key generate-node-key --file /home/ubuntu/node-key
@@ -134,34 +156,72 @@ STEP 2：ノードキーの生成
 
 このファイルにはノードのネットワーク秘密鍵が保存されます。コマンドは、他のノードがあなたのノードを見つけるために使うピア ID を出力します。ピア ID を控えておき、ファイルは非公開で保管し、紛失しないでください。ノードは起動のたびに同じキーを必要とします。
 
-STEP 3：シェルスクリプトに `--validator` と `--node-key` を追加
+STEP 6：起動スクリプトの作成：
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
 --validator \
---node-key $(cat /home/ubuntu/node-key) \
+--node-key $(cat $BASE_DIR/node-key) \
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
 --name "xode-x1-validator-name"
 ```
 
-バリデーターには `--rpc-external` を追加しないでください。RPC はそのマシンからのみアクセスできるようにします。
+ファイルを `/home/ubuntu` 以外の場所にダウンロードした場合は `BASE_DIR` を変更し、`--name` にはバリデーター名を設定してください。バリデーターには `--rpc-external` を追加しないでください。RPC はそのマシンからのみアクセスできるようにします。
 
-STEP 4：サービスを再起動し、ノードの同期完了を待つ
+STEP 7：launch-node.sh を実行可能にする
 
 ```bash
-sudo systemctl restart xode-solochain.service
+chmod +x launch-node.sh
+```
+
+STEP 8：サービスの作成：
+
+```bash
+sudo nano /etc/systemd/system/xode-solochain.service
+```
+
+```ini
+[Unit]
+Description=Xode X1 Validator
+[Service]
+ExecStart=/home/ubuntu/launch-node.sh
+Restart=always
+RestartSec=120
+[Install]
+WantedBy=multi-user.target
+```
+
+STEP 9：サービスの有効化
+
+```bash
+sudo systemctl enable xode-solochain.service
+```
+
+STEP 10：サービスの開始
+
+```bash
+sudo systemctl start xode-solochain.service
+```
+
+STEP 11：30 秒待ってからサービスが実行中か確認する
+
+```bash
 journalctl -f -u xode-solochain
 ```
 
-STEP 5：セッションキーの生成
+次の手順に進む前に、ノードの同期が完了するまで待ってください。
+
+STEP 12：セッションキーの生成
 
 バリデーターのマシンで実行します：
 
@@ -173,15 +233,15 @@ curl -H "Content-Type: application/json" \
 
 応答の `result` がセッションキーで、`0x` で始まる長い 16 進数の文字列です。対応する秘密鍵はノードのベースパスに保存されます。
 
-STEP 6：セッションキーをオンチェーンに登録
+STEP 13：セッションキーをオンチェーンに登録
 
 [XODE X1 に接続した Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) を開きます（RPC エンドポイント `wss://solochain.xode.net`）。
 
 **Developer → Extrinsics** を開き、バリデーターのアカウントから次を送信します：
 
-* `session.setKeys`：`keys` に STEP 5 の 16 進数文字列、`proof` に `0x` を指定
+* `session.setKeys`：`keys` に STEP 12 の 16 進数文字列、`proof` に `0x` を指定
 
-STEP 7：候補者登録とボンド
+STEP 14：候補者登録とボンド
 
 同じアカウントから次を送信します：
 

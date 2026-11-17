@@ -43,35 +43,39 @@ chmod +x xode-solochain-node
 STEP 4：创建基础路径目录
 
 ```bash
-mkdir xode-solochain
+mkdir data
 ```
 
 STEP 5：创建 shell 脚本：
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
---name "xode-solochain-node-name"
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
+--name "xode-x1-node-name"
 ```
 
-STEP 6：使 xode-solochain-node.sh 可执行
+如果文件没有下载到 `/home/ubuntu`，请修改 `BASE_DIR`，并将 `--name` 设置为节点在遥测中显示的名称。
+
+STEP 6：使 launch-node.sh 可执行
 
 ```bash
-chmod +x xode-solochain-node.sh
+chmod +x launch-node.sh
 ```
 
 STEP 7：测试能否运行
 
 ```bash
-./xode-solochain-node.sh
+./launch-node.sh
 ```
 
 日志中应能看到节点正在导入区块。进入下一步之前，按 `Ctrl+C` 停止它。
@@ -86,7 +90,7 @@ sudo nano /etc/systemd/system/xode-solochain.service
 [Unit]
 Description=Xode X1 Node
 [Service]
-ExecStart=/home/ubuntu/xode-solochain-node.sh
+ExecStart=/home/ubuntu/launch-node.sh
 Restart=always
 RestartSec=120
 [Install]
@@ -113,11 +117,29 @@ journalctl -f -u xode-solochain
 
 ## 运行 XODE X1 验证人
 
-验证人负责出块并对区块进行最终确认。它的设置与上面的节点相同，另外增加三项：固定的节点密钥、`--validator` 参数，以及在链上注册的会话密钥。每个会话（1 小时）中，按绑定金额加委托质押排名最高的候选人成为验证人。
+验证人负责出块并对区块进行最终确认。与上面的节点相比，它增加了三项：固定的节点密钥、`--validator` 参数，以及在链上注册的会话密钥。每个会话（1 小时）中，按绑定金额加委托质押排名最高的候选人成为验证人。
 
-你需要一个至少持有 100 XON 用于绑定、另有少量 XON 用于手续费的账户。
+你需要一个至少持有 100 XON 用于绑定、另有少量 XON 用于手续费的账户。以下步骤在满足节点最低配置的机器上从头搭建验证人。
 
-STEP 1：下载 Polkadot 二进制文件
+STEP 1：下载 xode-solochain-node 二进制文件
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+```
+
+STEP 2：下载链规范
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+```
+
+STEP 3：使二进制文件可执行
+
+```bash
+chmod +x xode-solochain-node
+```
+
+STEP 4：下载 Polkadot 二进制文件
 
 `polkadot` 二进制文件仅用于生成节点密钥。
 
@@ -126,7 +148,7 @@ curl -L "https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-s
 chmod +x polkadot
 ```
 
-STEP 2：生成节点密钥
+STEP 5：生成节点密钥
 
 ```bash
 ./polkadot key generate-node-key --file /home/ubuntu/node-key
@@ -134,34 +156,72 @@ STEP 2：生成节点密钥
 
 该文件保存节点的网络私钥。命令会输出节点的 Peer ID，其他节点通过它找到你的节点。请记下 Peer ID，妥善保管该文件且不要丢失：节点每次启动都需要同一个密钥。
 
-STEP 3：在 shell 脚本中添加 `--validator` 和 `--node-key`
+STEP 6：创建启动脚本：
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
 --validator \
---node-key $(cat /home/ubuntu/node-key) \
+--node-key $(cat $BASE_DIR/node-key) \
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
 --name "xode-x1-validator-name"
 ```
 
-不要给验证人添加 `--rpc-external`。它的 RPC 应只能从本机访问。
+如果文件没有下载到 `/home/ubuntu`，请修改 `BASE_DIR`，并将 `--name` 设置为验证人名称。不要给验证人添加 `--rpc-external`。它的 RPC 应只能从本机访问。
 
-STEP 4：重启服务并等待节点同步完成
+STEP 7：使 launch-node.sh 可执行
 
 ```bash
-sudo systemctl restart xode-solochain.service
+chmod +x launch-node.sh
+```
+
+STEP 8：创建服务：
+
+```bash
+sudo nano /etc/systemd/system/xode-solochain.service
+```
+
+```ini
+[Unit]
+Description=Xode X1 Validator
+[Service]
+ExecStart=/home/ubuntu/launch-node.sh
+Restart=always
+RestartSec=120
+[Install]
+WantedBy=multi-user.target
+```
+
+STEP 9：启用服务
+
+```bash
+sudo systemctl enable xode-solochain.service
+```
+
+STEP 10：启动服务
+
+```bash
+sudo systemctl start xode-solochain.service
+```
+
+STEP 11：等待 30 秒后检查服务是否正在运行
+
+```bash
 journalctl -f -u xode-solochain
 ```
 
-STEP 5：生成会话密钥
+进入下一步之前，请等待节点同步完成。
+
+STEP 12：生成会话密钥
 
 在验证人机器上运行：
 
@@ -173,15 +233,15 @@ curl -H "Content-Type: application/json" \
 
 返回结果中的 `result` 就是会话密钥，是一个以 `0x` 开头的长十六进制字符串。对应的私钥保存在节点的基础路径中。
 
-STEP 6：在链上注册会话密钥
+STEP 13：在链上注册会话密钥
 
 打开[已连接到 XODE X1 的 Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer)（RPC 端点 `wss://solochain.xode.net`）。
 
 进入 **Developer → Extrinsics**，用你的验证人账户提交：
 
-* `session.setKeys`：`keys` 填入 STEP 5 中的十六进制字符串，`proof` 填 `0x`
+* `session.setKeys`：`keys` 填入 STEP 12 中的十六进制字符串，`proof` 填 `0x`
 
-STEP 7：注册为候选人并绑定
+STEP 14：注册为候选人并绑定
 
 用同一个账户提交：
 

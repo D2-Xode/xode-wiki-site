@@ -43,35 +43,39 @@ chmod +x xode-solochain-node
 STEP 4: Make a base path directory
 
 ```bash
-mkdir xode-solochain
+mkdir data
 ```
 
 STEP 5: Create a shell script:
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
---name "xode-solochain-node-name"
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
+--name "xode-x1-node-name"
 ```
 
-STEP 6: Make the xode-solochain-node.sh executable
+Change `BASE_DIR` if you downloaded the files somewhere other than `/home/ubuntu`, and set `--name` to the name your node should show on telemetry.
+
+STEP 6: Make the launch-node.sh executable
 
 ```bash
-chmod +x xode-solochain-node.sh
+chmod +x launch-node.sh
 ```
 
 STEP 7: Test if it runs
 
 ```bash
-./xode-solochain-node.sh
+./launch-node.sh
 ```
 
 The log should show the node importing blocks. Stop it with `Ctrl+C` before the next step.
@@ -86,7 +90,7 @@ sudo nano /etc/systemd/system/xode-solochain.service
 [Unit]
 Description=Xode X1 Node
 [Service]
-ExecStart=/home/ubuntu/xode-solochain-node.sh
+ExecStart=/home/ubuntu/launch-node.sh
 Restart=always
 RestartSec=120
 [Install]
@@ -113,11 +117,29 @@ journalctl -f -u xode-solochain
 
 ## Running a XODE X1 validator
 
-A validator authors and finalizes blocks. It's set up like the node above, with three additions: a fixed node key, the `--validator` flag, and session keys registered on-chain. Each session (1 hour), the candidates ranked highest by bond plus delegated stake become the validators.
+A validator authors and finalizes blocks. Compared with the node above, it has three additions: a fixed node key, the `--validator` flag, and session keys registered on-chain. Each session (1 hour), the candidates ranked highest by bond plus delegated stake become the validators.
 
-You need an account holding at least 100 XON to bond, plus some XON for fees.
+You need an account holding at least 100 XON to bond, plus some XON for fees. The steps below set up a validator from scratch, on a machine that meets the same minimum requirements as a node.
 
-STEP 1: Download the Polkadot binary
+STEP 1: Download the xode-solochain-node binary
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+```
+
+STEP 2: Download the chain spec
+
+```bash
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+```
+
+STEP 3: Make the binary executable
+
+```bash
+chmod +x xode-solochain-node
+```
+
+STEP 4: Download the Polkadot binary
 
 The `polkadot` binary is used only to generate the node key.
 
@@ -126,7 +148,7 @@ curl -L "https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-s
 chmod +x polkadot
 ```
 
-STEP 2: Generate a node key
+STEP 5: Generate a node key
 
 ```bash
 ./polkadot key generate-node-key --file /home/ubuntu/node-key
@@ -134,34 +156,72 @@ STEP 2: Generate a node key
 
 The file holds the node's private network key. The command prints the node's peer ID, which other nodes use to find yours. Note it down, keep the file private, and don't lose it: the node needs the same key every time it starts.
 
-STEP 3: Add `--validator` and `--node-key` to the shell script
+STEP 6: Create the launch script:
 
 ```bash
-nano xode-solochain-node.sh
+nano launch-node.sh
 ```
 
 ```bash
 #!/bin/bash
-/home/ubuntu/xode-solochain-node \
---chain /home/ubuntu/xode-mainnet-raw.json \
---base-path /home/ubuntu/xode-solochain \
+BASE_DIR=/home/ubuntu
+
+$BASE_DIR/xode-solochain-node \
+--chain $BASE_DIR/xode-mainnet-raw.json \
+--base-path $BASE_DIR/data \
 --rpc-port 9944 \
---pruning archive \
 --validator \
---node-key $(cat /home/ubuntu/node-key) \
+--node-key $(cat $BASE_DIR/node-key) \
+--telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
 --name "xode-x1-validator-name"
 ```
 
-Don't add `--rpc-external` to a validator. Its RPC should only be reachable from the machine itself.
+Change `BASE_DIR` if you downloaded the files somewhere other than `/home/ubuntu`, and set `--name` to your validator's name. Don't add `--rpc-external` to a validator. Its RPC should only be reachable from the machine itself.
 
-STEP 4: Restart the service and wait for the node to finish syncing
+STEP 7: Make the launch-node.sh executable
 
 ```bash
-sudo systemctl restart xode-solochain.service
+chmod +x launch-node.sh
+```
+
+STEP 8: Create a service:
+
+```bash
+sudo nano /etc/systemd/system/xode-solochain.service
+```
+
+```ini
+[Unit]
+Description=Xode X1 Validator
+[Service]
+ExecStart=/home/ubuntu/launch-node.sh
+Restart=always
+RestartSec=120
+[Install]
+WantedBy=multi-user.target
+```
+
+STEP 9: Enable the service
+
+```bash
+sudo systemctl enable xode-solochain.service
+```
+
+STEP 10: Start the service
+
+```bash
+sudo systemctl start xode-solochain.service
+```
+
+STEP 11: Wait for 30 seconds and check if the service is running
+
+```bash
 journalctl -f -u xode-solochain
 ```
 
-STEP 5: Generate session keys
+Wait until the node has finished syncing before the next step.
+
+STEP 12: Generate session keys
 
 Run this on the validator machine:
 
@@ -173,15 +233,15 @@ curl -H "Content-Type: application/json" \
 
 The `result` in the reply is your session keys, a long hex string starting with `0x`. The node keeps the matching private keys in its base path.
 
-STEP 6: Register the session keys on-chain
+STEP 13: Register the session keys on-chain
 
 Open [Polkadot-JS Apps connected to XODE X1](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) (RPC endpoint `wss://solochain.xode.net`).
 
 Go to **Developer → Extrinsics** and, from your validator account, submit:
 
-* `session.setKeys`, with `keys` set to the hex string from STEP 5 and `proof` set to `0x`
+* `session.setKeys`, with `keys` set to the hex string from STEP 12 and `proof` set to `0x`
 
-STEP 7: Register as a candidate and bond
+STEP 14: Register as a candidate and bond
 
 From the same account, submit:
 
