@@ -16,7 +16,7 @@ type Labels = {
 // sidebar, then add their titles to every locale's `pages` below.
 const SIDEBAR: [section: string, pages: string[]][] = [
   ['introduction', ['lets-get-started', 'polkadot-ecosystem', 'web3', 'xode-blockchain', 'xode-governance']],
-  ['network', ['compiling-xode', 'runtime-upgrade', 'xode-network', 'xode-node', 'xode-node-kusama-3344', 'xode-solochain-node', 'xode-staking', 'xode-transaction-fees']],
+  ['network', ['compiling-xode', 'runtime-upgrade', 'xode-network', 'xode-node', 'xode-node-kusama-3344', 'xode-x1-node', 'xode-staking', 'xode-transaction-fees']],
   ['security', ['block-verification', 'security-mechanism']],
   ['smart-contract', ['evm-smart-contract', 'wasm-smart-contract']],
   ['wallets', ['xterium-wallet-beta']],
@@ -59,7 +59,7 @@ const en: Labels = {
     'xode-network': 'XODE Network',
     'xode-node': 'XODE Node',
     'xode-node-kusama-3344': 'XODE Node (Kusama 3344, legacy)',
-    'xode-solochain-node': 'XODE Solochain Node',
+    'xode-x1-node': 'XODE X1 Node',
     'xode-staking': 'XODE Staking',
     'xode-transaction-fees': 'XODE Transaction Fees',
     'block-verification': 'Block Verification',
@@ -96,7 +96,7 @@ const ko: Labels = {
     'xode-network': 'XODE 네트워크',
     'xode-node': 'XODE 노드',
     'xode-node-kusama-3344': 'XODE 노드 (Kusama 3344, 레거시)',
-    'xode-solochain-node': 'XODE 솔로체인 노드',
+    'xode-x1-node': 'XODE X1 노드',
     'xode-staking': 'XODE 스테이킹',
     'xode-transaction-fees': 'XODE 거래 수수료',
     'block-verification': '블록 검증',
@@ -133,7 +133,7 @@ const ja: Labels = {
     'xode-network': 'XODE ネットワーク',
     'xode-node': 'XODE ノード',
     'xode-node-kusama-3344': 'XODE ノード (Kusama 3344、旧版)',
-    'xode-solochain-node': 'XODE ソロチェーンノード',
+    'xode-x1-node': 'XODE X1 ノード',
     'xode-staking': 'XODE ステーキング',
     'xode-transaction-fees': 'XODE トランザクション手数料',
     'block-verification': 'ブロック検証',
@@ -170,7 +170,7 @@ const zh: Labels = {
     'xode-network': 'XODE 网络',
     'xode-node': 'XODE 节点',
     'xode-node-kusama-3344': 'XODE 节点 (Kusama 3344，旧版)',
-    'xode-solochain-node': 'XODE 独立链节点',
+    'xode-x1-node': 'XODE X1 节点',
     'xode-staking': 'XODE 质押',
     'xode-transaction-fees': 'XODE 交易费用',
     'block-verification': '区块验证',
@@ -209,6 +209,13 @@ const OLD_WIKI_PAGES: Record<string, string> = {
   '1YOGj63VMjNRUtZ6tLeBNSPpnam36yJG1FXkzrS5fRpE': '/xon/tokenomics',
   '1gcFIvd2zd_UPczJk2FrtLiAr8pV1OC7PnXmTQm3KmDE': '/xon/xon-utility-token',
 }
+
+// Pages that were renamed after going live. The old URL, in every locale, redirects to
+// the new one.
+const MOVED_PAGES: Record<string, string> = {
+  '/network/xode-solochain-node': '/network/xode-x1-node',
+}
+const LOCALE_PREFIXES = ['', '/ko', '/ja', '/zh']
 
 const redirectPage = (to: string) => `<!doctype html>
 <html lang="en">
@@ -319,6 +326,13 @@ export default defineConfig({
       const file = path.join(outDir, 'app', 'page', `${id}.html`)
       fs.mkdirSync(path.dirname(file), { recursive: true })
       fs.writeFileSync(file, redirectPage(page))
+    }
+    for (const [from, to] of Object.entries(MOVED_PAGES)) {
+      for (const prefix of LOCALE_PREFIXES) {
+        const file = path.join(outDir, `${prefix}${from}.html`)
+        fs.mkdirSync(path.dirname(file), { recursive: true })
+        fs.writeFileSync(file, redirectPage(`${prefix}${to}`))
+      }
     }
   },
 
