@@ -10,7 +10,7 @@
 | 블록 시간 | 1초 |
 | EVM 체인 ID | 34170 |
 
-노드 바이너리와 체인 스펙은 [xode-solochain-release 릴리스 페이지](https://github.com/D2-Xode/xode-solochain-release/releases)에 게시됩니다. 아래 명령은 v0.1.0을 다운로드합니다. 더 새로운 릴리스를 사용하려면 `v0.1.0`을 해당 태그로 바꾸세요.
+노드 바이너리와 체인 스펙은 [xode-solochain-release 릴리스 페이지](https://github.com/D2-Xode/xode-solochain-release/releases)에 게시됩니다. 아래 명령은 v0.1.1을 다운로드합니다. 더 새로운 릴리스를 사용하려면 `v0.1.1`을 해당 태그로 바꾸세요.
 
 ## 호스트에서 XODE X1 노드 직접 실행하기
 
@@ -24,13 +24,13 @@
 STEP 1: xode-solochain-node 바이너리 다운로드
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2: 체인 스펙 다운로드
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3: 바이너리를 실행 가능하게 만들고 실행되는지 확인
@@ -124,13 +124,13 @@ journalctl -f -u xode-solochain
 STEP 1: xode-solochain-node 바이너리 다운로드
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2: 체인 스펙 다운로드
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3: 바이너리를 실행 가능하게 만들기
