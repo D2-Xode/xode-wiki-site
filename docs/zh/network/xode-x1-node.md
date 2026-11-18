@@ -10,7 +10,7 @@
 | 出块时间 | 1 秒 |
 | EVM 链 ID | 34170 |
 
-节点二进制文件和链规范发布在 [xode-solochain-release 发布页面](https://github.com/D2-Xode/xode-solochain-release/releases)。以下命令下载 v0.1.0；如需更新的版本，请将 `v0.1.0` 替换为对应标签。
+节点二进制文件和链规范发布在 [xode-solochain-release 发布页面](https://github.com/D2-Xode/xode-solochain-release/releases)。以下命令下载 v0.1.1；如需更新的版本，请将 `v0.1.1` 替换为对应标签。
 
 ## 在主机上直接运行 XODE X1 节点
 
@@ -24,13 +24,13 @@
 STEP 1：下载 xode-solochain-node 二进制文件
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2：下载链规范
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3：使二进制文件可执行并检查能否运行
@@ -124,13 +124,13 @@ journalctl -f -u xode-solochain
 STEP 1：下载 xode-solochain-node 二进制文件
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2：下载链规范
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3：使二进制文件可执行

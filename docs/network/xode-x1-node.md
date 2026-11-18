@@ -10,7 +10,7 @@ These steps run a node for XODE X1, a standalone Substrate chain with its own va
 | Block time | 1 second |
 | EVM chain ID | 34170 |
 
-The node binary and chain spec are published on the [xode-solochain-release releases page](https://github.com/D2-Xode/xode-solochain-release/releases). The commands below download v0.1.0; for a newer release, replace `v0.1.0` with its tag.
+The node binary and chain spec are published on the [xode-solochain-release releases page](https://github.com/D2-Xode/xode-solochain-release/releases). The commands below download v0.1.1; for a newer release, replace `v0.1.1` with its tag.
 
 ## Running a XODE X1 node directly in the host
 
@@ -24,13 +24,13 @@ Minimum AWS Instance type: t2.medium
 STEP 1: Download the xode-solochain-node binary
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2: Download the chain spec
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3: Make the binary executable and check that it runs
@@ -124,13 +124,13 @@ You need an account holding at least 100 XON to bond, plus some XON for fees. Th
 STEP 1: Download the xode-solochain-node binary
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2: Download the chain spec
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3: Make the binary executable

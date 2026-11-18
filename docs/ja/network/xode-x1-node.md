@@ -10,7 +10,7 @@
 | ブロック時間 | 1 秒 |
 | EVM チェーン ID | 34170 |
 
-ノードバイナリとチェーンスペックは [xode-solochain-release のリリースページ](https://github.com/D2-Xode/xode-solochain-release/releases) で公開されます。以下のコマンドは v0.1.0 をダウンロードします。より新しいリリースを使う場合は、`v0.1.0` をそのタグに置き換えてください。
+ノードバイナリとチェーンスペックは [xode-solochain-release のリリースページ](https://github.com/D2-Xode/xode-solochain-release/releases) で公開されます。以下のコマンドは v0.1.1 をダウンロードします。より新しいリリースを使う場合は、`v0.1.1` をそのタグに置き換えてください。
 
 ## ホスト上で XODE X1 ノードを直接実行する
 
@@ -24,13 +24,13 @@
 STEP 1：xode-solochain-node バイナリのダウンロード
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2：チェーンスペックのダウンロード
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3：バイナリを実行可能にし、動作を確認する
@@ -124,13 +124,13 @@ journalctl -f -u xode-solochain
 STEP 1：xode-solochain-node バイナリのダウンロード
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-solochain-node" -o xode-solochain-node
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-solochain-node" -o xode-solochain-node
 ```
 
 STEP 2：チェーンスペックのダウンロード
 
 ```bash
-curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.0/xode-mainnet-raw.json" -o xode-mainnet-raw.json
+curl -L "https://github.com/D2-Xode/xode-solochain-release/releases/download/v0.1.1/xode-mainnet-raw.json" -o xode-mainnet-raw.json
 ```
 
 STEP 3：バイナリを実行可能にする
