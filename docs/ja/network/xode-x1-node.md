@@ -12,6 +12,18 @@
 
 ノードバイナリとチェーンスペックは [xode-solochain-release のリリースページ](https://github.com/D2-Xode/xode-solochain-release/releases) で公開されます。以下のコマンドは v0.1.1 をダウンロードします。より新しいリリースを使う場合は、`v0.1.1` をそのタグに置き換えてください。
 
+## 公開 RPC エンドポイント
+
+XODE X1 を利用するために自分でノードを運用する必要はありません。以下の公開エンドポイントは、同じホストで WebSocket（`wss://`）と HTTPS JSON-RPC の両方に対応しています。近い場所を選んでください。3 つとも同じチェーンを提供します。
+
+| エンドポイント | 運営者 | 所在地 | 備考 |
+|--------------|--------|--------|------|
+| `wss://solochain.xode.net` | XODE | ソウル | プライマリ |
+| `wss://x1rpc.xode.net` | RockSon | フランクフルト | アーカイブノード、全履歴 |
+| `wss://x1rpc2.xode.net` | RockSon | 東京 | アーカイブノード、全履歴 |
+
+Polkadot-JS Apps で開く: [solochain.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) · [x1rpc.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc.xode.net#/explorer) · [x1rpc2.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc2.xode.net#/explorer)
+
 ## ホスト上で XODE X1 ノードを直接実行する
 
 最小 AWS インスタンスタイプ：t2.medium
@@ -235,7 +247,7 @@ curl -H "Content-Type: application/json" \
 
 STEP 13：セッションキーをオンチェーンに登録
 
-[XODE X1 に接続した Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) を開きます（RPC エンドポイント `wss://solochain.xode.net`）。
+[XODE X1 に接続した Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) を開きます（RPC エンドポイント `wss://solochain.xode.net`、または上の[公開 RPC エンドポイント](#公開-rpc-エンドポイント)表のいずれか）。
 
 **Developer → Extrinsics** を開き、バリデーターのアカウントから次を送信します：
 

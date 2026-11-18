@@ -12,6 +12,18 @@ These steps run a node for XODE X1, a standalone Substrate chain with its own va
 
 The node binary and chain spec are published on the [xode-solochain-release releases page](https://github.com/D2-Xode/xode-solochain-release/releases). The commands below download v0.1.1; for a newer release, replace `v0.1.1` with its tag.
 
+## Public RPC endpoints
+
+You don't need your own node to use XODE X1. These public endpoints accept WebSocket (`wss://`) and HTTPS JSON-RPC on the same host. Pick the one closest to you; all three serve the same chain.
+
+| Endpoint | Operator | Location | Notes |
+|----------|----------|----------|-------|
+| `wss://solochain.xode.net` | XODE | Seoul | Primary |
+| `wss://x1rpc.xode.net` | RockSon | Frankfurt | Archive node, full history |
+| `wss://x1rpc2.xode.net` | RockSon | Tokyo | Archive node, full history |
+
+Open any of them in Polkadot-JS Apps: [solochain.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) · [x1rpc.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc.xode.net#/explorer) · [x1rpc2.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc2.xode.net#/explorer).
+
 ## Running a XODE X1 node directly in the host
 
 Minimum AWS Instance type: t2.medium
@@ -235,7 +247,7 @@ The `result` in the reply is your session keys, a long hex string starting with 
 
 STEP 13: Register the session keys on-chain
 
-Open [Polkadot-JS Apps connected to XODE X1](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) (RPC endpoint `wss://solochain.xode.net`).
+Open [Polkadot-JS Apps connected to XODE X1](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) (RPC endpoint `wss://solochain.xode.net`, or any endpoint from the [Public RPC endpoints](#public-rpc-endpoints) table).
 
 Go to **Developer → Extrinsics** and, from your validator account, submit:
 
