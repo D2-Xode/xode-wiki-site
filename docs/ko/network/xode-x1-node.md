@@ -12,6 +12,18 @@
 
 노드 바이너리와 체인 스펙은 [xode-solochain-release 릴리스 페이지](https://github.com/D2-Xode/xode-solochain-release/releases)에 게시됩니다. 아래 명령은 v0.1.1을 다운로드합니다. 더 새로운 릴리스를 사용하려면 `v0.1.1`을 해당 태그로 바꾸세요.
 
+## 공개 RPC 엔드포인트
+
+XODE X1을 사용하기 위해 직접 노드를 운영할 필요는 없습니다. 아래 공개 엔드포인트는 같은 호스트에서 WebSocket(`wss://`)과 HTTPS JSON-RPC를 모두 지원합니다. 가까운 곳을 고르세요. 세 곳 모두 같은 체인을 제공합니다.
+
+| 엔드포인트 | 운영사 | 위치 | 비고 |
+|----------|--------|------|------|
+| `wss://solochain.xode.net` | XODE | 서울 | 기본 |
+| `wss://x1rpc.xode.net` | RockSon | 프랑크푸르트 | 아카이브 노드, 전체 이력 |
+| `wss://x1rpc2.xode.net` | RockSon | 도쿄 | 아카이브 노드, 전체 이력 |
+
+Polkadot-JS Apps에서 바로 열기: [solochain.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) · [x1rpc.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc.xode.net#/explorer) · [x1rpc2.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc2.xode.net#/explorer)
+
 ## 호스트에서 XODE X1 노드 직접 실행하기
 
 최소 AWS 인스턴스 유형: t2.medium
@@ -235,7 +247,7 @@ curl -H "Content-Type: application/json" \
 
 STEP 13: 세션 키를 온체인에 등록
 
-[XODE X1에 연결된 Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer)를 여세요(RPC 엔드포인트 `wss://solochain.xode.net`).
+[XODE X1에 연결된 Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer)를 여세요(RPC 엔드포인트 `wss://solochain.xode.net`, 또는 위 [공개 RPC 엔드포인트](#공개-rpc-엔드포인트) 표의 아무 주소).
 
 **Developer → Extrinsics**로 이동해 검증자 계정으로 다음을 제출하세요:
 

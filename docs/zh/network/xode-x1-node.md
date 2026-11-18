@@ -12,6 +12,18 @@
 
 节点二进制文件和链规范发布在 [xode-solochain-release 发布页面](https://github.com/D2-Xode/xode-solochain-release/releases)。以下命令下载 v0.1.1；如需更新的版本，请将 `v0.1.1` 替换为对应标签。
 
+## 公共 RPC 端点
+
+使用 XODE X1 无需自行运行节点。以下公共端点在同一主机上同时支持 WebSocket（`wss://`）和 HTTPS JSON-RPC。请选择离你最近的一个；三者提供的是同一条链。
+
+| 端点 | 运营方 | 位置 | 备注 |
+|------|--------|------|------|
+| `wss://solochain.xode.net` | XODE | 首尔 | 主端点 |
+| `wss://x1rpc.xode.net` | RockSon | 法兰克福 | 归档节点，完整历史 |
+| `wss://x1rpc2.xode.net` | RockSon | 东京 | 归档节点，完整历史 |
+
+在 Polkadot-JS Apps 中打开：[solochain.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer) · [x1rpc.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc.xode.net#/explorer) · [x1rpc2.xode.net](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fx1rpc2.xode.net#/explorer)
+
 ## 在主机上直接运行 XODE X1 节点
 
 最低 AWS 实例类型：t2.medium
@@ -235,7 +247,7 @@ curl -H "Content-Type: application/json" \
 
 STEP 13：在链上注册会话密钥
 
-打开[已连接到 XODE X1 的 Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer)（RPC 端点 `wss://solochain.xode.net`）。
+打开[已连接到 XODE X1 的 Polkadot-JS Apps](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsolochain.xode.net#/explorer)（RPC 端点 `wss://solochain.xode.net`，或上方[公共 RPC 端点](#公共-rpc-端点)表中的任意一个）。
 
 进入 **Developer → Extrinsics**，用你的验证人账户提交：
 
